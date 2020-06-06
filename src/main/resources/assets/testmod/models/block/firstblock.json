@@ -1,0 +1,9 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "particle": "testmod:block/firstblock",
+    "side": "testmod:block/firstblock",
+    "top": "testmod:block/firstblock_top",
+    "front": "testmod:block/firstblock_front"
+  }
+}
