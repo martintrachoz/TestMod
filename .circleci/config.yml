@@ -2,12 +2,17 @@
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
-version: 2
-jobs:
-  build:
+version: 2.1
+
+executors:
+  main-executor:
     docker:
       - image: circleci/openjdk:8-jdk
 
+jobs:
+  install:
+    executor: main-executor
+    
     working_directory: ~/repo
 
     environment:
@@ -24,10 +29,38 @@ jobs:
       - run:
           name: Download Dependencies
           command: ./gradlew dependencies
-
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - .gradle
+            - repo    
+            
+  build:
+    executor: main-executor
+    
+    working_directory: ~/repo
+    
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: /home/circleci
+    
       - run:
-          name: Build
+          name: Build main jar
           command: ./gradlew build
+          
+      - run:
+          name: Build dev jar
+          command: ./gradlew devJar   
       
       - store_artifacts:
           path: ./build/libs
+
+workflows:
+  version: 2.1
+  main:
+    jobs:
+      - install
+      - build:
+          requires:
+            - install
