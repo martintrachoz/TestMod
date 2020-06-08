@@ -29,6 +29,11 @@ jobs:
       - run:
           name: Download Dependencies
           command: ./gradlew dependencies
+      - persist_to_workspace:
+          root: ~
+          paths:
+            - .gradle
+            - repo    
             
   build:
     executor: main-executor
