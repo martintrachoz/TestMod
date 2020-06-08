@@ -29,14 +29,6 @@ jobs:
       - run:
           name: Download Dependencies
           command: ./gradlew dependencies
-          
-      - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory
-          root: ~
-          # Must be relative path from root
-          paths:
-            - .gradle
-            - repo
             
   build:
     executor: main-executor
@@ -44,10 +36,6 @@ jobs:
     working_directory: ~/repo
     
     steps:
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: ~
-      
       - run:
           name: Build
           command: ./gradlew build
