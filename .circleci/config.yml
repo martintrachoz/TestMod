@@ -30,10 +30,10 @@ jobs:
           name: Download Dependencies
           command: ./gradlew dependencies
       - persist_to_workspace:
-          root: repo
+          root: /home/circleci
           paths:
-            - ~/.gradle
-            - ~/repo    
+            - .gradle
+            - repo    
             
   build:
     executor: main-executor
