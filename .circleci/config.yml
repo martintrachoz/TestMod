@@ -30,10 +30,10 @@ jobs:
           name: Download Dependencies
           command: ./gradlew dependencies
       - persist_to_workspace:
-          root: ~
+          root: repo
           paths:
-            - .gradle
-            - repo    
+            - ~/.gradle
+            - ~/repo    
             
   build:
     executor: main-executor
