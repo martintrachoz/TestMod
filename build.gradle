@@ -13,18 +13,13 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.0-' + ("$System.env.CIRCLE_BUILD_NUM" != "null" ? "$System.env.CIRCLE_BUILD_NUM" : "0")
+version = version_major+'.'+version_minor+'-' + ("$System.env.CIRCLE_BUILD_NUM" != "null" ? "$System.env.CIRCLE_BUILD_NUM" : "0")
 group = 'com.su5ed.testmod' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'testmod'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    // The mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   Snapshot are built nightly.
-    // stable_#            Stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not always work.
-    // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'snapshot', version: '20190719-1.14.3'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
@@ -126,6 +121,11 @@ jar {
     }
 }
 
+task devJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = "dev"
+}
+
 // Example configuration to allow publishing using the maven-publish task
 // we define a custom artifact that is sourced from the reobfJar output task
 // and then declare that to be published
@@ -146,4 +146,22 @@ publishing {
             url "file:///${project.projectDir}/mcmodsrepo"
         }
     }
+}
+
+processResources {
+
+	inputs.property "version", project.version
+
+	from(sourceSets.main.resources.srcDirs) {
+		include 'mcmod.info'
+
+		expand 'version': project.version
+	}
+
+	from(sourceSets.main.resources.srcDirs) {
+		exclude 'mcmod.info'
+		exclude '**/*.md'
+	}
+
+	rename '(.+_at.cfg)', 'META-INF/$1'
 }
